@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Companies</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .company-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .company-list li {
+            background-color: #f4f4f4;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .company-list li a {
+            text-decoration: none;
+            color: #333;
+        }
+        .company-list li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Companies and Jobs</h1>
+    <form action="{{ url_for('search_companies') }}" method="post">
+        <input type="text" name="keywords" placeholder="Enter company keywords" required>
+        <button type="submit">Search Companies</button>
+    </form>
+    <form action="{{ url_for('search_jobs') }}" method="post">
+        <input type="text" name="keywords" placeholder="Enter job keywords" required>
+        <button type="submit">Search Jobs</button>
+    </form>
+    {% if companies is not none %}
+        <h2>Companies</h2>
+        <ul class="company-list">
+            {% for company in companies %}
+                <li>
+                    <a href="{{ url_for('company_detail', company_id=company['urn_id']) }}" target="_blank">
+                        {{ company['name'] }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if jobs is not none %}
+        <h2>Jobs</h2>
+        <ul class="job-list">
+            {% for job in jobs %}
+                <li>
+                    <a href="{{ job['apply_url'] }}" target="_blank">
+                        {{ job }}
+                        {{ job['title'] }} at {{ job['company'] }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

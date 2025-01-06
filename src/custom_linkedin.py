@@ -43,6 +43,7 @@ class CustomLinkedin(Linkedin):
         while True:
             if limit > -1 and limit - len(results) < count:
                 count = limit - len(results)
+                print("Count in the limit: ", count)
             default_params = {
                 "decorationId": "com.linkedin.voyager.dash.deco.jobs.search.JobSearchCardsCollection-174",
                 "count": count,
@@ -57,25 +58,41 @@ class CustomLinkedin(Linkedin):
                 f"/voyagerJobsDashJobCards?{urlencode(default_params, safe='(),:')}",
                 headers={"accept": "application/vnd.linkedin.normalized+json+2.1"},
             )
-            data = res.json()
 
+            if res.status_code != 200:
+                print(f"Error: Received status code {res.status_code}")
+                print(f"Response: {res.text}")
+                print(res)
+
+            data = res.json()
             elements = data.get("included", [])
+
             new_data = [
                 i
                 for i in elements
                 if i["$type"] == "com.linkedin.voyager.dash.jobs.JobPosting"
             ]
             if not new_data:
+                print("No new data")
                 break
             results.extend(new_data)
 
             print("Results amount: ", len(results))
             print("Total amount: ", data.get("data", {}).get("paging", {}).get("total", 0))
+            print("Count: ", count)
+            print("Limit: ", limit)
 
             if (
                 (-1 < limit <= len(results))
                 or len(results) / count >= self._MAX_REPEATED_REQUESTS
             ) or len(elements) == 0:
+                
+                if (-1 < limit <= len(results)):
+                    print("Limit reached")
+                if len(results) / count >= self._MAX_REPEATED_REQUESTS:
+                    print("Max repeated requests reached")
+                if len(elements) == 0:
+                    print("No more elements to fetch")
                 break
 
         return results

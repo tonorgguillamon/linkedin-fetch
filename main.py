@@ -14,7 +14,7 @@ with open('config.json') as config_file:
     config = json.load(config_file)
 
 # Authenticate using any Linkedin user account credentials
-api = CustomLinkedin(config['username'], config['password'])
+api = Linkedin(config['username'], config['password'])
 
 #print('------------------- JOB -------------------')
 #print(json.dumps(api.get_job('4112864647'), indent=4))

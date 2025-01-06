@@ -1,4 +1,13 @@
 from flask import Flask, render_template, request
+from src.Job import *
+
+def get_job_ids(jobs):
+    # Extract the job IDs from the jobs
+    # i.e. {'trackingUrn': 'urn:li:jobPosting:4081854722',...}
+    job_ids = []
+    for job in jobs:
+        job_ids.append(job['trackingUrn'].split(':')[-1])
+    return job_ids
 
 def run_app(api):
     app = Flask(__name__, template_folder='../templates')
@@ -17,7 +26,15 @@ def run_app(api):
     @app.route('/search_jobs', methods=['POST'])
     def search_jobs():
         keywords = request.form['keywords']
-        jobs = api.search_jobs(keywords, listed_at=15 * 24 * 60 * 60, limit=3000, offset=800)
+        jobs = api.search_jobs(keywords, listed_at=30 * 24 * 60 * 60, limit=3000, offset=900)
+        job_ids = get_job_ids(jobs)
+        for id in job_ids:
+            print(id)
+            job_info = api.get_job(id)
+            print(job_info)
+            #job = Job(scrap_job(job_info))
+            #TODO: Add job to the somewhere!
+
         print("Number of jobs found: " + str(len(jobs)))
         return render_template('index.html', companies=None, jobs=jobs)
 

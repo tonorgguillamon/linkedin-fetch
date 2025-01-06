@@ -29,9 +29,7 @@ def run_app(api):
         jobs = api.search_jobs(keywords, listed_at=30 * 24 * 60 * 60, limit=3000, offset=900)
         job_ids = get_job_ids(jobs)
         for id in job_ids:
-            print(id)
             job_info = api.get_job(id)
-            print(job_info)
             #job = Job(scrap_job(job_info))
             #TODO: Add job to the somewhere!
 

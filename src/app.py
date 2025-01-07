@@ -30,7 +30,7 @@ def run_app(api):
         job_ids = get_job_ids(jobs)
         for id in job_ids:
             job_info = api.get_job(id)
-            #job = Job(scrap_job(job_info))
+            print(scrap_job(job_info))
             #TODO: Add job to the somewhere!
 
         print("Number of jobs found: " + str(len(jobs)))

@@ -16,26 +16,31 @@ class Job(BaseModel):
 
 def scrap_job(data: dict) -> Job:
     # Extract revlevant information from the parameters
-    # See example in src/job_post_data.json
+    # See example in job_post_data.json
     job_data = {}
 
     # Company name:
-    job_data['company'] = data['companyDetails'] \
-                              ['com.linkedin.voyager.deco.jobs.web.shared.WebCompactJobPostingCompany'] \
-                              ['companyResolutionResult'] \
-                              ['name']
-    job_data['description'] = data['description']['text']
-    job_data['title'] = data['title']
-    job_data['link_apply'] = data['applyMethod'] \
-                                  ['com.linkedin.voyager.jobs.ComplexOnsiteApply'] \
-                                  ['easyApplyUrl']
-    modalities = [wptype.strip(':')[-1] for wptype in data['workplaceTypes']]
-    job_data['modality'] = ', '.join(modalities)
+    job_data['company'] = data.get('companyDetails', {}).get(
+        'com.linkedin.voyager.deco.jobs.web.shared.WebCompactJobPostingCompany', {}
+        ).get('companyResolutionResult', {}).get('name', 'Unknown')
     
-    posted_date = datetime.fromtimestamp(data['listedAt']/1000) # convert from ms to s
-    job_data['posted_date'] = posted_date.strftime('%Y-%m-%d')
+    job_data['description'] = data.get('description', {}).get('text', 'Unknown')
+    job_data['title'] = data.get('title', 'Unknown')
+    job_data['link_apply'] = data.get('applyMethod', {}).get(
+        'com.linkedin.voyager.jobs.ComplexOnsiteApply', {}
+        ).get('easyApplyUrl', 'Unknown')
     
-    job_data['location'] = data['formattedLocation']
+    modalities = ', '.join([wptype.strip(':')[-1] for wptype in data.get('workplaceTypes', []) if wptype])
+    job_data['modality'] = modalities.replace("1", "on-site").replace("2", "remote").replace("3", "hybrid")
+    
+    listed_at = data.get('listedAt', 0)/1000 # convert from ms to s
+    if listed_at != 0:
+        posted_date = datetime.fromtimestamp(listed_at)
+        job_data['posted_date'] = posted_date.strftime('%Y-%m-%d')
+    else:
+        job_data['posted_date'] = 'Unknown'
+    
+    job_data['location'] = data.get('formattedLocation', 'Unknown')
 
     return job_data
 

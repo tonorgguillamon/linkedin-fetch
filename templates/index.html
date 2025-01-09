@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Companies</title>
+    <title>Search Companies and Jobs</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,30 +38,5 @@
         <input type="text" name="keywords" placeholder="Enter job keywords" required>
         <button type="submit">Search Jobs</button>
     </form>
-    {% if companies is not none %}
-        <h2>Companies</h2>
-        <ul class="company-list">
-            {% for company in companies %}
-                <li>
-                    <a href="{{ url_for('company_detail', company_id=company['urn_id']) }}" target="_blank">
-                        {{ company['name'] }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    {% if jobs is not none %}
-        <h2>Jobs</h2>
-        <ul class="job-list">
-            {% for job in jobs %}
-                <li>
-                    <a href="{{ job['apply_url'] }}" target="_blank">
-                        {{ job }}
-                        {{ job['title'] }} at {{ job['company'] }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
 </body>
 </html>

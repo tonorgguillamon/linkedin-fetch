@@ -34,6 +34,7 @@
                                 <p class="card-text"><strong>Location:</strong> {{ job.location }}</p>
                                 <p class="card-text"><strong>Modality:</strong> {{ job.modality }}</p>
                                 <p class="card-text"><strong>Posted Date:</strong> {{ job.posted_date }}</p>
+                                <p class="card-text"><strong>Percentage criteria met:</strong> {{ job.criteria_met ~ "%" }}</p>
                                 <a href="{{ job.link_apply }}" class="btn btn-primary">Apply Now</a>
                             </div>
                         </div>
@@ -43,6 +44,12 @@
                 <p>No jobs found.</p>
             {% endif %}
         </div>
+        </form>
+        {% if jobs_count is not none %}
+            <div class="mt-4">
+                <p>Number of jobs found: {{ jobs_count }}</p>
+            </div>
+        {% endif %}
     </div>
     <script>
         function toggleDescription(id) {

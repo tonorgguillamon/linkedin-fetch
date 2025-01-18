@@ -9,10 +9,18 @@ class Job(BaseModel):
     modality: str = Field("", description="Presential, hybrid, remote.")
     location: str = Field(..., description="The job's location.")
     description: str = Field(..., description="The job's description.")
-    score: float = Field(0.0, description="Score defines how close to the desire job.")
+    score: float = Field(0.0, description="Score defines how close to the desire job (criteria + modality + salary + seniority).")
     criteria_met: int = Field(0, description="Percentage of criteria met (skills, experience).")
+    criteria_array: list = Field([], description="Stores 1 for keyword met and 0 else. Keeps the order.")
     posted_date: str = Field(..., description="The date the job was posted.")
     link_apply: str = Field(..., description="The link to apply for the job.")
+
+    def calculate_criteria_met(self, keywords: list[str]):
+        self.criteria_array = [1 if k in self.description.lower() else 0 for k in keywords]
+        self.criteria_met = int(sum(self.criteria_array)/len(self.criteria_array)*100)
+
+    def calculate_score(self):
+        pass
 
 def scrap_job(data: dict) -> Job:
     # Extract revlevant information from the parameters

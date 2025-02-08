@@ -32,9 +32,11 @@
                                     <span id="desc-{{ loop.index }}" class="description">{{ job.description }}</span>
                                 </p>
                                 <p class="card-text"><strong>Location:</strong> {{ job.location }}</p>
-                                <p class="card-text"><strong>Modality:</strong> {{ job.modality }}</p>
+                                <p class="card-text"><strong>Modality:</strong> {{ ", ".join(job.modality) }}</p>
+                                <p class="card-text"><strong>Experience:</strong> {{ ", ".join(job.seniority) }}</p>
                                 <p class="card-text"><strong>Posted Date:</strong> {{ job.posted_date }}</p>
                                 <p class="card-text"><strong>Percentage criteria met:</strong> {{ job.criteria_met ~ "%" }}</p>
+                                <p class="card-text"><strong>Discloses salary?:</strong> {{ job.salary }}</p>
                                 <a href="{{ job.link_apply }}" class="btn btn-primary">Apply Now</a>
                             </div>
                         </div>

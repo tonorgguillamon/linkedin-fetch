@@ -18,7 +18,13 @@
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">Job Listings</h1>
-        <div class="row">
+
+        <!-- Toggle Button -->
+        <div class="d-flex justify-content-end mb-4">
+            <button id="toggleButton" class="btn btn-secondary" onclick="toggleJobs()">Show Jobs Within Criteria</button>
+        </div>
+
+        <div class="row" id="jobsContainer">
             {% if jobs %}
                 {% for job in jobs %}
                     <div class="col-md-4 mb-4">
@@ -47,13 +53,72 @@
             {% endif %}
         </div>
         </form>
-        {% if jobs_count is not none %}
+        {% if jobs_count is not none and jobs_criteria_count is not none%}
             <div class="mt-4">
                 <p>Number of jobs found: {{ jobs_count }}</p>
+                <p>From which {{ jobs_criteria_count }} meet the criteria</p>
             </div>
         {% endif %}
     </div>
     <script>
+        let showingAllJobs = true;
+
+        function toggleJobs() {
+            const button = document.getElementById('toggleButton');
+            const jobsContainer = document.getElementById('jobsContainer');
+
+            if (showingAllJobs) {
+                // Fetch jobs within criteria
+                fetch('/criteria_jobs')
+                    .then(response => response.json())
+                    .then(data => {
+                        renderJobs(data.jobs);
+                        button.textContent = 'Show All Jobs';
+                        showingAllJobs = false;
+                    });
+            } else {
+                // Fetch all jobs
+                fetch('/all_jobs')
+                    .then(response => response.json())
+                    .then(data => {
+                        renderJobs(data.jobs);
+                        button.textContent = 'Show Jobs Within Criteria';
+                        showingAllJobs = true;
+                    });
+            }
+        }
+
+        function renderJobs(jobs) {
+            const jobsContainer = document.getElementById('jobsContainer');
+            jobsContainer.innerHTML = '';
+
+            jobs.forEach((job, index) => {
+                const jobCard = `
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">${job.title}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">${job.company}</h6>
+                                <p class="card-text">
+                                    ${job.description.slice(0, 100)}...
+                                    <span class="read-more" onclick="toggleDescription('desc-${index}')">read more</span>
+                                    <span id="desc-${index}" class="description">${job.description}</span>
+                                </p>
+                                <p class="card-text"><strong>Location:</strong> ${job.location}</p>
+                                <p class="card-text"><strong>Modality:</strong> ${job.modality.join(', ')}</p>
+                                <p class="card-text"><strong>Experience:</strong> ${job.seniority.join(', ')}</p>
+                                <p class="card-text"><strong>Posted Date:</strong> ${job.posted_date}</p>
+                                <p class="card-text"><strong>Percentage criteria met:</strong> ${job.criteria_met}%</p>
+                                <p class="card-text"><strong>Discloses salary?:</strong> ${job.salary}</p>
+                                <a href="${job.link_apply}" class="btn btn-primary">Apply Now</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                jobsContainer.innerHTML += jobCard;
+            });
+        }
+
         function toggleDescription(id) {
             var element = document.getElementById(id);
             if (element.style.display === "none") {

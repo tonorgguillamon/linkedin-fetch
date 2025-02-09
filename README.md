@@ -1,4 +1,4 @@
-# ENHANCEMENT TO LINKEDIN JOB SEARCH
+# Enhancement to LinkedIn JOB SEARCH
 
 Anybody who has used LinkedIn for job seeking has probably realized that it doesn't work wonders.
 The filters are not consistent.
@@ -12,7 +12,7 @@ Thus, in order to help whoever is in the job hunting mood, I have developed an s
 that will take the following filters:
 - Job position/s
 - Keyword/s
-- Experience Level
+- Experience Levels
 - Modality
 - Type of Job
 - Location
@@ -21,19 +21,19 @@ It runs few searches in parallel, leveraging multithreading, and displays the re
 
 As explain above, LinkedIn internal "API" quite ignores the filters. Therefore there is a tailored data treatment step to enhaces the search.
 
-[!IMPORTANT]
-This application is NOT supported by LinkedIn. Using it for commertial purposes might violate LinkedIn's terms of Service. I am not resposible of any product developed based on this.
+>[!IMPORTANT]
+>This application is NOT supported by LinkedIn. Using it for commertial purposes might violate LinkedIn's terms of Service. I am not resposible of any product developed based on this.
 
-[!NOTE]
-Development phase. Don't expect flawless performance.
+>[!NOTE]
+>Development phase. Don't expect flawless performance.
 
-[!REMARKS]
-LinkedIn internal API caps the search to 1000 outputs.
-The tool scraps position posted in last 24 hours, in order to show relevant offers.
-The ultimate architecture is to run - on schedule - the app once a day and store the jobs of interest.
+>[!REMARKS]
+>LinkedIn internal API caps the search to 1000 outputs.
+>The tool scraps position posted in last 24 hours, in order to show relevant offers.
+>The ultimate architecture is to run - on schedule - the app once a day and store the jobs of interest.
 
-[!APPRECIATION]
-I want to thank the user tomquirk for providing his code https://github.com/tomquirk/linkedin-api, which has been essential to the development of this app.
+> [!APPRECIATION]
+> I want to thank the user *tomquirk* for providing his code https://github.com/tomquirk/linkedin-api which has been essential to the development of this app.
 
 ## Instructions
 You will need LinkedIn credentials in order to run searches.

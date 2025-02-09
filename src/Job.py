@@ -17,6 +17,11 @@ class Job(BaseModel):
     posted_date: str = Field(..., description="The date the job was posted.")
     link_apply: str = Field(..., description="The link to apply for the job.")
 
+    def dict(self, *args, **kwargs):
+        data = super().dict(*args, **kwargs)
+        data['modality'] = list(data['modality'])  # Convert modality set to list - so it's serializable
+        return data
+
     def calculate_criteria_met(self, skills: list[str]):
         self.criteria_array = [1 if k in self.description.lower() else 0 for k in skills]
         self.criteria_met = int(sum(self.criteria_array)/len(self.criteria_array)*100)
@@ -40,7 +45,7 @@ class Job(BaseModel):
         if re.search(r'\bsenior\b', self.title.lower()) or re.search(r'\bsenior\b', self.description.lower()):
             self.seniority.append("Senior")
         if re.search(r'\bmanager\b', self.title.lower()) or re.search(r'\bmanager\b', self.description.lower()) \
-                or re.search(r'\blead\b', self.title.lower()) or re.search(r'\blead\b', self.description.lower()):
+                or re.search(r'\blead\b', self.title.lower()) or re.search(r'\bteam lead\b', self.description.lower()):
             self.seniority.append("Manager")
         if re.search(r'\bexecutive\b', self.title.lower()) or re.search(r'\bexecutive\b', self.description.lower()):
             self.seniority.append("Executive")

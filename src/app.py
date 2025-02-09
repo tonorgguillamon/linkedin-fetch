@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from src.Job import Job, scrap_job
 from src.JobManager import JobManager, RequestPreferences
 import time
@@ -84,12 +84,13 @@ def multiple_search_calls(api, filters):
 
     return fetched
 
+jobManager = JobManager()
+
 def run_app(api):
     app = Flask(__name__, template_folder='../templates')
 
     @app.route('/')
     def index():
-        # Pass the profile and companies data to the template
         return render_template('index.html', companies=None, jobs=None)
 
     @app.route('/search_companies', methods=['POST'])
@@ -107,9 +108,10 @@ def run_app(api):
             request.form.getlist('modality'),
             request.form.getlist('job_type'),
             map_location(request.form['location']),
-            request.form['keywords']
+            request.form['keywords'],
+            request.form['percentage_criteria']
         )
-        jobManager = JobManager(requestPreferences)
+        jobManager.set_preferences(requestPreferences)
         # The LinkedIn search doesn't always stick to the filters set.
         # To cover wider spectrum of jobs, there are multiple calls to it,
         # modifiying few of the parameters:
@@ -130,14 +132,19 @@ def run_app(api):
         end_time = time.time()
 
         print("Elapsed time calculating criteria Jobs: " + str(end_time-start_time))
-        # https://www.linkedin.com/job-apply/4115964225
-        # https://www.linkedin.com/jobs/search/?currentJobId=4115964225
 
-        
         return render_template('jobs_search.html',
                                companies=None,
-                               jobs=jobManager.get_requested_jobs(),
-                               jobs_count=jobManager.jobsAmount())
+                               jobs=jobManager.get_jobs(),
+                               jobs_count=jobManager.jobsAmount(),
+                               jobs_criteria_count=len(jobManager.get_requested_jobs()))
+    @app.route('/all_jobs')
+    def all_jobs():
+        return jsonify({'jobs': [job.dict() for job in jobManager.get_jobs()]})
+
+    @app.route('/criteria_jobs')
+    def criteria_jobs():
+        return jsonify({'jobs': [job.dict() for job in jobManager.get_requested_jobs()]})
 
     @app.route('/company/<int:company_id>')
     def company_detail(company_id):

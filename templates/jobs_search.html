@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Listings</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .description {
+            display: none;
+        }
+        .read-more {
+            cursor: pointer;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Job Listings</h1>
+        <div class="row">
+            {% if jobs %}
+                {% for job in jobs %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ job.title }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ job.company }}</h6>
+                                <p class="card-text">
+                                    {{ job.description[:100] }}...
+                                    <span class="read-more" onclick="toggleDescription('desc-{{ loop.index }}')">read more</span>
+                                    <span id="desc-{{ loop.index }}" class="description">{{ job.description }}</span>
+                                </p>
+                                <p class="card-text"><strong>Location:</strong> {{ job.location }}</p>
+                                <p class="card-text"><strong>Modality:</strong> {{ ", ".join(job.modality) }}</p>
+                                <p class="card-text"><strong>Experience:</strong> {{ ", ".join(job.seniority) }}</p>
+                                <p class="card-text"><strong>Posted Date:</strong> {{ job.posted_date }}</p>
+                                <p class="card-text"><strong>Percentage criteria met:</strong> {{ job.criteria_met ~ "%" }}</p>
+                                <p class="card-text"><strong>Discloses salary?:</strong> {{ job.salary }}</p>
+                                <a href="{{ job.link_apply }}" class="btn btn-primary">Apply Now</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No jobs found.</p>
+            {% endif %}
+        </div>
+        </form>
+        {% if jobs_count is not none %}
+            <div class="mt-4">
+                <p>Number of jobs found: {{ jobs_count }}</p>
+            </div>
+        {% endif %}
+    </div>
+    <script>
+        function toggleDescription(id) {
+            var element = document.getElementById(id);
+            if (element.style.display === "none") {
+                element.style.display = "inline";
+            } else {
+                element.style.display = "none";
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

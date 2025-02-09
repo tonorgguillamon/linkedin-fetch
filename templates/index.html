@@ -3,65 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Companies</title>
+    <title>Search Companies and Jobs</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .company-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .company-list li {
-            background-color: #f4f4f4;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-        .company-list li a {
-            text-decoration: none;
-            color: #333;
-        }
-        .company-list li a:hover {
-            text-decoration: underline;
+        .manual-location {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <h1>Search Companies and Jobs</h1>
-    <form action="{{ url_for('search_companies') }}" method="post">
-        <input type="text" name="keywords" placeholder="Enter company keywords" required>
-        <button type="submit">Search Companies</button>
-    </form>
-    <form action="{{ url_for('search_jobs') }}" method="post">
-        <input type="text" name="keywords" placeholder="Enter job keywords" required>
-        <button type="submit">Search Jobs</button>
-    </form>
-    {% if companies is not none %}
-        <h2>Companies</h2>
-        <ul class="company-list">
-            {% for company in companies %}
-                <li>
-                    <a href="{{ url_for('company_detail', company_id=company['urn_id']) }}" target="_blank">
-                        {{ company['name'] }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    {% if jobs is not none %}
-        <h2>Jobs</h2>
-        <ul class="job-list">
-            {% for job in jobs %}
-                <li>
-                    <a href="{{ job['apply_url'] }}" target="_blank">
-                        {{ job }}
-                        {{ job['title'] }} at {{ job['company'] }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Search Companies and Jobs</h1>
+        <form action="{{ url_for('search_companies') }}" method="post" class="mb-4">
+            <div class="form-group">
+                <input type="text" name="keywords" class="form-control" placeholder="Enter company keywords" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Search Companies</button>
+        </form>
+        <form action="{{ url_for('search_jobs') }}" method="post">
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                <input type="text" name="job_title" class="form-control" placeholder="Enter job title" style="width: 30%;" required>
+                <input type="text" name="keywords" class="form-control" placeholder="Enter keywords that the offer should mention" style="width: 50%;">
+                <span style="font-size: 0.7em;">Input keywords separated by comma.<br> The order determines the importance.</span>
+            </div>
+            
+            <h3>Experience Level</h3>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="experience_level" value="1" id="intern">
+                    <label class="form-check-label" for="intern">Intern</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="experience_level" value="2" id="entry">
+                    <label class="form-check-label" for="entry">Junior</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="experience_level" value="3" id="associate">
+                    <label class="form-check-label" for="associate">Mid</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="experience_level" value="4" id="mid">
+                    <label class="form-check-label" for="mid">Senior</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="experience_level" value="5" id="director">
+                    <label class="form-check-label" for="director">Manager/Lead</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="experience_level" value="6" id="executive">
+                    <label class="form-check-label" for="executive">Executive</label>
+                </div>
+            </div>
+            
+            <h3>Modality</h3>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="modality" value="1" id="presential">
+                    <label class="form-check-label" for="presential">Presential</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="modality" value="2" id="remote">
+                    <label class="form-check-label" for="remote">Remote</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="modality" value="3" id="hybrid">
+                    <label class="form-check-label" for="hybrid">Hybrid</label>
+                </div>
+            </div>
+            
+            <h3>Type of Job</h3>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="job_type" value="F" id="full_time">
+                    <label class="form-check-label" for="full_time">Full-Time</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="job_type" value="C" id="contract">
+                    <label class="form-check-label" for="contract">Contract</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="job_type" value="P" id="part_time">
+                    <label class="form-check-label" for="part_time">Part-Time</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="job_type" value="T" id="temporary">
+                    <label class="form-check-label" for="temporary">Temporary</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="job_type" value="I" id="internship">
+                    <label class="form-check-label" for="internship">Internship</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="job_type" value="V" id="volunteer">
+                    <label class="form-check-label" for="volunteer">Volunteer</label>
+                </div>
+            </div>
+            
+            <h3>Location</h3>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="location" value="Europe" id="europe" onclick="toggleManualLocation()">
+                    <label class="form-check-label" for="europe">Europe</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="location" value="North America" id="north_america" onclick="toggleManualLocation()">
+                    <label class="form-check-label" for="north_america">North America</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="location" value="Schengen" id="schengen" onclick="toggleManualLocation()">
+                    <label class="form-check-label" for="schengen">Schengen</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="location" value="Asia-Pacific and Japan" id="asia_pacific" onclick="toggleManualLocation()">
+                    <label class="form-check-label" for="asia_pacific">Asia-Pacific and Japan</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="location" value="Switzerland" id="switzerland" onclick="toggleManualLocation()">
+                    <label class="form-check-label" for="switzerland">Switzerland</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="location" value="Nordic Countries" id="nordic_countries" onclick="toggleManualLocation()">
+                    <label class="form-check-label" for="nordic_countries">Nordic Countries</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="location" value="Poland" id="poland" onclick="toggleManualLocation()">
+                    <label class="form-check-label" for="poland">Poland</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="location" value="Spain" id="spain" onclick="toggleManualLocation()">
+                    <label class="form-check-label" for="spain">Spain</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Search Jobs</button>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

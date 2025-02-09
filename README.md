@@ -23,16 +23,12 @@ As explain above, LinkedIn internal "API" quite ignores the filters. Therefore t
 
 >[!IMPORTANT]
 >This application is NOT supported by LinkedIn. Using it for commertial purposes might violate LinkedIn's terms of Service. I am not resposible of any product developed based on this.
-
->[!NOTE]
->Development phase. Don't expect flawless performance.
-
->[!REMARKS]
 >LinkedIn internal API caps the search to 1000 outputs.
 >The tool scraps position posted in last 24 hours, in order to show relevant offers.
 >The ultimate architecture is to run - on schedule - the app once a day and store the jobs of interest.
 
-> [!APPRECIATION]
+>[!NOTE]
+>Development phase. Don't expect flawless performance.s
 > I want to thank the user *tomquirk* for providing his code https://github.com/tomquirk/linkedin-api which has been essential to the development of this app.
 
 ## Instructions
